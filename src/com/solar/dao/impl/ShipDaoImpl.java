@@ -313,9 +313,10 @@ public class ShipDaoImpl implements ShipDao {
 					state = true;
 					
 				}else{
+					logger.debug("  报告错误，文件不存在");
 					//报告错误，文件不存在
-					state = false;
-					break outer;
+					//state = false;
+					//break outer;
 				}
 					
 			}

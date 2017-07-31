@@ -2,6 +2,7 @@ package com.solar.utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,10 +20,14 @@ import org.apache.http.message.BasicNameValuePair;
 public class PostMethod {
 	
 	public static void main(String[] args) {
-		String url = "http://192.168.3.45:8080/Land/LandListener";
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("ship", "{\"db\":\"1.0.0.0_db_release_20170713\",\"app\":\"1.0.0.0_app_release_20170713\",\"toUpdate\":\"ditu,db\",\"ditu\":\"1.0.0.0_ditu_release_20170713\",\"haitu\":\"1.0.0.1_haitu_release_20170717\"}");
-		httpClientPost(url, params, "utf-8");
+		String data = "[{搴曞浘=true}]";
+		try {
+			data =  new String(data.getBytes("ISO-8859-1"),"gbk");
+			System.out.println(data);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static String httpClientPost(String urlParam, Map<String, Object> params, String charset) {  
@@ -39,13 +44,16 @@ public class PostMethod {
         BufferedReader br = null;  
         try {  
             if (list.size() > 0) {  
+            	
+            	
                 UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list, charset);  
                 httpPost.setEntity(entity);  
             }  
-            HttpResponse response = client.execute(httpPost);  
+            HttpResponse response = client.execute(httpPost); 
+           
             // 读取服务器响应数据  
             resultBuffer = new StringBuffer();  
-            br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));  
+            br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),"utf-8"));  
             String temp;  
             while ((temp = br.readLine()) != null) {  
                 resultBuffer.append(temp);  
@@ -65,4 +73,5 @@ public class PostMethod {
         System.out.println(resultBuffer.toString());
         return resultBuffer.toString();  
     }  
+	 
 }

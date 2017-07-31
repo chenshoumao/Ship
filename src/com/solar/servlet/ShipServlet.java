@@ -22,7 +22,7 @@ import com.solar.utils.ResourceBundleUtil;
  * Servlet implementation class ShipServlet
  */
 @WebServlet("/ShipServlet")
-public class ShipServlet extends HttpServlet {
+public class ShipServlet extends HttpServlet{
 	private static Logger logger = Logger.getLogger(ShipServlet.class);
 	private static final long serialVersionUID = 1L;
 	private ShipDaoImpl dao;
@@ -88,11 +88,11 @@ public class ShipServlet extends HttpServlet {
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("ship",json);
 			params.put("ip",ip);
-			PostMethod.httpClientPost(url, params, "utf-8");
-		//	response.setCharacterEncoding("utf-8");
-		//	PrintWriter out = response.getWriter();
-		//	out.print(json);
-			//request.getRequestDispatcher("http://192.168.3.45:8080/Land/LandListener?ship=" + json).forward(request, response);
+			String result = PostMethod.httpClientPost(url, params, "utf-8");
+			response.setCharacterEncoding("utf-8");			
+			response.setHeader("content-type", "text/html;chaset=UTF-8");
+			PrintWriter out = response.getWriter();
+			out.println(result);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -132,5 +132,7 @@ public class ShipServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
+
+	 
 
 }

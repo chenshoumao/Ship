@@ -24,20 +24,33 @@
 					 temp += $(this).val() + ",";
 				 }
 			})
+			alert("已经向岸端程序发出更新请求，请等待。。。");
 			$.ajax({
 				url:"http://localhost:8080/Ship/ShipServlet",
 				type:'post', 
-				data:{'data':temp},
-				success:function(json){
-					console.log(json);
-					/*$.ajax({
-						url:"http://192.168.3.45:8080/Land/LandListener",
-						type:'post',
-						dataType:'json',
-						data:{'ship':json},
-						success:function(result){ 
-						}
-					})*/
+				dataType:'json',
+				data:{'data':temp},				
+				success:function(list){
+					console.log(list);
+					var state = true;
+					var consoleInfo = "";
+					
+					for(var i = 0; i < list.length;i++){
+						$.each(list[i],function(key,values){ 
+							if(values == false){ 
+								consoleInfo += key + " 在岸端的升级包发生错误";
+							}
+							else if(values == true){
+								consoleInfo += key + " 已获取到更新包，即将更新并重启。。。";
+							}
+							else{
+								consoleInfo += key + " " + values;
+							}
+							
+						})
+					}
+					alert(consoleInfo);
+					
 				}
 			})
 		})

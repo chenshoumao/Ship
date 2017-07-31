@@ -57,7 +57,7 @@ public class UpdateShipLogs extends HttpServlet {
 			int count = 0;
 			for (String key : dataList) {
 				String keyInfo = bundleUtil.getInfo("config/module", key);
-				String sql = "update ship_update_logs set new_version = ? , update_time = ? , is_over= 1 where update_type =? and original_version != ? and is_over = 0";
+				String sql = "update ship_update_logs set new_version = ? , update_time = ? , is_over= 1, update_state = '更新完毕' where update_type =? and original_version != ? and is_over = 0";
 				ConnectUtil connectUtil = new ConnectUtil();
 				Connection conn = connectUtil.getConn();
 				PreparedStatement ps; 
