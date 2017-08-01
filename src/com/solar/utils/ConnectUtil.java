@@ -6,43 +6,36 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ConnectUtil { 
-	
-	public Connection getConn(){ 
-		
-		ResourceBundleUtil bundleUtil = new ResourceBundleUtil();
-		String ip = bundleUtil.getInfo("config/db", "ip");
-		String port = bundleUtil.getInfo("config/db", "port");
-		String databases = bundleUtil.getInfo("config/db", "databases");
-		String username = bundleUtil.getInfo("config/db", "username");
-		String password = bundleUtil.getInfo("config/db", "password");
-		// 驱动程序名
-		String driver = "com.mysql.jdbc.Driver"; 
-		// URL指向要访问的数据库名scutcs
-		String url = "jdbc:mysql://"+ip+":"+port+"/"+databases+"?useUnicode=true&characterEncoding=UTF-8"; 
-		 
-		try {
-			// 加载驱动程序
-			Class.forName(driver); 
-			// 连续数据库
-			Connection conn = DriverManager.getConnection(url, username, password); 
-			if (!conn.isClosed())
-				System.out.println("Succeeded connecting to the Database!"); 
-			// statement用来执行SQL语句
+public class ConnectUtil {
 
-			return conn; 
-		} catch (ClassNotFoundException e) {
-			System.out.println("Sorry,can`t find the Driver!");
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+	private static String driver = "org.apache.derby.jdbc.ClientDriver";
+	private static String protocol = "jdbc:derby://";
+	// String dbName = "jdbc://192.168.3.45:1527//Users/Administrator/dedb";
+	String dbName = "";
+
+	String ip = "";
+	String port = "";
+	String username = "";
+	String password = "";
+	public Connection getConn() {
+		try {
+			ResourceBundleUtil bundleUtil = new ResourceBundleUtil();
+			ip = bundleUtil.getInfo("config/db", "ip");
+			port =  bundleUtil.getInfo("config/db", "port");
+			username = bundleUtil.getInfo("config/db", "username");
+			password = bundleUtil.getInfo("config/db", "password");
+			dbName = bundleUtil.getInfo("config/db", "dbName");
+			Class.forName(driver).newInstance();
+			Connection conn = DriverManager.getConnection(protocol + ip + ":" + port + dbName + ";user="+username+";password="+password+";create=true");
+			Statement statement = conn.createStatement();
+			return conn;
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
 		return null;
 	}
-	
-	public void closeConn(Connection conn){
+
+	public void closeConn(Connection conn) {
 		try {
 			conn.close();
 		} catch (SQLException e) {
@@ -50,12 +43,12 @@ public class ConnectUtil {
 			e.printStackTrace();
 		}
 	}
-	
-	public boolean excuteSQL(Connection conn,String sql){
+
+	public boolean excuteSQL(Connection conn, String sql) {
 		boolean result = false;
 		try {
-			Statement statement = conn.createStatement(); 
-			// 要执行的SQL语句 
+			Statement statement = conn.createStatement();
+			// 要执行的SQL语句
 			result = statement.execute(sql);
 		} catch (Exception e) {
 			// TODO: handle exception

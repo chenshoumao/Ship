@@ -110,7 +110,7 @@ public class ShipDaoImpl implements ShipDao {
 				logger.debug("  " + keyInfo + " 的版本是 ： " + version);
 				boolean state = selectLogs(keyInfo, version);
 				if(state){
-				String sql = "insert into ship_update_logs(update_type,original_version,create_time,update_state,is_over)"
+				String sql = "insert into ship_update_logs(module,original_version,create_time,update_state,is_over)"
 						+ " value(?,?,?,?,?)";
 				ConnectUtil connectUtil = new ConnectUtil();
 				Connection conn = connectUtil.getConn();
@@ -151,7 +151,7 @@ public class ShipDaoImpl implements ShipDao {
 		String info = "";
 		for(String key:keyList){
 			String keyInfo = bundleUtil.getInfo("config/module", key);
-			String sql = "select * from ship_update_logs where update_type = ? and is_over = 0";
+			String sql = "select * from ship_update_logs where module = ? and is_over = 0";
 			ConnectUtil connectUtil = new ConnectUtil();
 			Connection conn = connectUtil.getConn();
 			try {
@@ -178,7 +178,7 @@ public class ShipDaoImpl implements ShipDao {
 	}
 
 	public boolean selectLogs(String keyInfo,String version){
-		String sql = "select * from ship_update_logs where original_version = ? and update_type = ? and is_over = 0";
+		String sql = "select * from ship_update_logs where original_version = ? and module = ? and is_over = 0";
 		ConnectUtil connectUtil = new ConnectUtil();
 		Connection conn = connectUtil.getConn();
 		PreparedStatement ps;
@@ -204,7 +204,7 @@ public class ShipDaoImpl implements ShipDao {
 			
 			int count = 0;
 		 
-				String sql = "update ship_update_logs set  create_time = ? where update_type =? and original_version = ? and is_over = 0";
+				String sql = "update ship_update_logs set  create_time = ? where module =? and original_version = ? and is_over = 0";
 				ConnectUtil connectUtil = new ConnectUtil();
 				Connection conn = connectUtil.getConn();
 				PreparedStatement ps; 
@@ -236,7 +236,7 @@ public class ShipDaoImpl implements ShipDao {
 		ResourceBundleUtil bundleUtil = new ResourceBundleUtil();
 		String tempPath = bundleUtil.getInfo("config/ship", "unzipPath");
 		Connection conn = connectUtil.getConn();
-		String sql = "select update_type,original_version from ship_update_logs where is_over= 0";
+		String sql = "select module,original_version from ship_update_logs where is_over= 0";
 		PreparedStatement ps;
 		ObjectMapper mapper = new ObjectMapper();
 		
