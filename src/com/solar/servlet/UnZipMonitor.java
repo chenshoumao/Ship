@@ -3,6 +3,7 @@ package com.solar.servlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,6 +11,7 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +20,12 @@ import javax.servlet.http.HttpServlet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solar.dao.impl.ShipDaoImpl;
 import com.solar.utils.CopyFileUtil;
 import com.solar.utils.MyException;
+import com.solar.utils.PostMethod;
 import com.solar.utils.ReadFile;
 import com.solar.utils.ResourceBundleUtil;
 import com.solar.utils.SQLExcute;
@@ -111,6 +116,9 @@ public class UnZipMonitor extends HttpServlet implements Runnable {
 								}  
 								logger.debug("船端第四步");
 								logger.debug("	重启tomcat7");
+								
+								
+								
 								//重启tomcat7
 								TomcatUtil tomcatUtil = new TomcatUtil();
 								tomcatUtil.stopTomcat();

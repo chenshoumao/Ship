@@ -9,11 +9,11 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-  <servlet>
+   <servlet>
     <servlet-name>upzip</servlet-name>
     <servlet-class>com.solar.servlet.UnZipMonitor</servlet-class>
     <load-on-startup>5</load-on-startup>
-  </servlet>
+  </servlet>   
   <servlet>
     <servlet-name>UpdateShipLogs</servlet-name>
     <servlet-class>com.solar.servlet.UpdateShipLogs</servlet-class>
@@ -24,8 +24,5 @@
     <servlet-class>com.solar.servlet.ClearServlet</servlet-class>
     <load-on-startup>5</load-on-startup>
   </servlet>
-  <servlet-mapping>
-    <servlet-name>upzip</servlet-name>
-    <url-pattern>/upzip</url-pattern>
-  </servlet-mapping>
+   
 </web-app>

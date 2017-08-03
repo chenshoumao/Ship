@@ -95,6 +95,7 @@ public class ShipServlet extends HttpServlet{
 			out.println(result);
 		} catch (Exception e) {
 			// TODO: handle exception
+			logger.debug(e);
 		}
 
 	}

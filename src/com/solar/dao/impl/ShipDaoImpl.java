@@ -5,29 +5,24 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.derby.client.am.PreparedStatement;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysql.jdbc.PreparedStatement;
 import com.solar.dao.ShipDao;
 
 import com.solar.utils.ConnectUtil;
 import com.solar.utils.MyException;
-import com.solar.utils.ReadFile;
 import com.solar.utils.ResourceBundleUtil;
-import com.sun.jna.Function;
 
 public class ShipDaoImpl implements ShipDao {
 	private static Logger logger = Logger.getLogger(ShipDaoImpl.class);
@@ -43,7 +38,6 @@ public class ShipDaoImpl implements ShipDao {
 	@Override
 	public Map<String, Object> updateVersion(String json) {
 		// TODO Auto-generated method stub
-
 		return null;
 	}
 
@@ -107,11 +101,10 @@ public class ShipDaoImpl implements ShipDao {
 				logger.debug("  对应的中文名字是 ： " + keyInfo);
 				
 				String version = (String) map.get(key);
-				logger.debug("  " + keyInfo + " 的版本是 ： " + version);
-				boolean state = selectLogs(keyInfo, version);
-				if(state){
+				logger.debug("  " + keyInfo + " 的版本是 ： " + version); 
+			 
 				String sql = "insert into ship_update_logs(module,original_version,create_time,update_state,is_over)"
-						+ " value(?,?,?,?,?)";
+						+ " values(?,?,?,?,?)";
 				ConnectUtil connectUtil = new ConnectUtil();
 				Connection conn = connectUtil.getConn();
 				PreparedStatement ps;
@@ -124,11 +117,9 @@ public class ShipDaoImpl implements ShipDao {
 				ps.setString(3, simpleFormat.format(date));
 				ps.setString(4, "等待岸端数据反馈...");
 				ps.setInt(5, 0);
-				return ps.execute();
-				}
-				else{
-					return updateLogs(keyInfo, version);
-				}
+				ps.execute();
+			 
+				 
 
 			}
 
@@ -200,10 +191,8 @@ public class ShipDaoImpl implements ShipDao {
 	@Override
 	public boolean updateLogs(String keyInfo, String version) {
 		 
-		try {
-			
-			int count = 0;
-		 
+		try { 
+			int count = 0; 
 				String sql = "update ship_update_logs set  create_time = ? where module =? and original_version = ? and is_over = 0";
 				ConnectUtil connectUtil = new ConnectUtil();
 				Connection conn = connectUtil.getConn();
@@ -334,11 +323,23 @@ public class ShipDaoImpl implements ShipDao {
 	}
 	
 	public static void main(String[] args) {
-		try {
-			List<String> line = FileUtils.readLines(new File("D:\\海图项目\\临时文件\\增量文件\\division.txt"));
-			 
-			System.out.println(line);
-		} catch (IOException e) {
+		try { 
+			int count = 0; 
+				String sql = "insert into SHIP_UPDATE_LOGS(CREATE_TIME) values(?)";
+				ConnectUtil connectUtil = new ConnectUtil();
+				Connection conn = connectUtil.getConn();
+				PreparedStatement ps; 
+				ps = (PreparedStatement) conn.prepareStatement(sql);
+				
+				SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Timestamp goodsC_date =Timestamp.valueOf(simpleFormat.format(new Date()));//把时间转换
+				ps.setTimestamp(1, goodsC_date);
+			
+				boolean state = ps.execute();
+				ps.close();
+				connectUtil.closeConn(conn); 
+
+		}catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -37,19 +37,26 @@
 					
 					for(var i = 0; i < list.length;i++){
 						$.each(list[i],function(key,values){ 
-							if(values == false){ 
-								consoleInfo += key + " 在岸端的升级包发生错误";
-							}
-							else if(values == true){
+							if(values == true){
 								consoleInfo += key + " 已获取到更新包，即将更新并重启。。。";
 							}
 							else{
+								state = false;
 								consoleInfo += key + " " + values;
 							}
 							
 						})
 					}
 					alert(consoleInfo);
+					
+					if(!state){
+						//由于后台验证代码的存在，一发现有错误情况是，根本不会有values == true 的存在，所以此时 consoleInfo 都为错误信息 
+						$.ajax({
+							url:"http://localhost:8080/Ship/UpdateShipLogs",
+							type:'post', 
+							data:{'info':consoleInfo}
+						})
+					}
 					
 				}
 			})

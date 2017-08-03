@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.derby.client.am.PreparedStatement;
 import org.apache.log4j.Logger;
 
-import com.mysql.jdbc.PreparedStatement;
 
 public class SQLExcute {
 
