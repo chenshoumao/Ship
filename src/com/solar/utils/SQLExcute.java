@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -41,6 +42,7 @@ public class SQLExcute {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			logger.debug("  出错： " + e);
 		}
 
 	}
@@ -48,21 +50,31 @@ public class SQLExcute {
 	public void updateDB(File sqlFile) {
 		// TODO Auto-generated method stub
 		try {
-
-			if (sqlFile.getName().indexOf("sql") > 0) {
+			ConnectUtil connectUtil = new ConnectUtil();
+			Connection conn = connectUtil.getConn();
+			if (sqlFile.getName().equals("update.sql")) {
 				List<String> list = FileUtils.readLines(sqlFile);
 				logger.debug("数据库文件内容是：" + list);
-				ConnectUtil connectUtil = new ConnectUtil();
-				Connection conn = connectUtil.getConn();
-				for (String str : list) {
-					System.out.println(str);
-					connectUtil.excuteSQL(conn, str);
+				
+				for (String sql : list) { 
+					logger.debug("  " + sql);
+//					boolean result = connectUtil.excuteSQL(conn, str);
+					try {
+						Statement statement = conn.createStatement();
+						// 要执行的SQL语句
+						statement.execute(sql);
+					} catch (Exception e) {
+						// TODO: handle exception
+						logger.debug("  报错" +  e);
+					}
+					
 				}
-				connectUtil.closeConn(conn);
+				
 			}
-
+			connectUtil.closeConn(conn);
 		} catch (Exception e) {
 			// TODO: handle exception
+			logger.debug("  出错: " + e);
 		}
 	}
 	

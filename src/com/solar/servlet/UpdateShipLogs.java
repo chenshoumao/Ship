@@ -14,9 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.derby.client.am.PreparedStatement;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.derby.client.am.PreparedStatement; 
 import com.solar.dao.impl.ShipDaoImpl;
 import com.solar.utils.ConnectUtil;
 import com.solar.utils.PostMethod;
@@ -44,7 +42,11 @@ public class UpdateShipLogs extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-    public void UpdateLogs(){
+    
+    public static void main(String[] args) {
+    	 UpdateLogs();
+	}
+    public static void UpdateLogs(){
 		// TODO Auto-generated method stub
 	 
 		
@@ -85,12 +87,18 @@ public class UpdateShipLogs extends HttpServlet {
 		//更新版本表
 		for(String key : dataList){
 			String keyInfo = bundleUtil.getInfo("config/module", key);
-			String sql = "update ship_version set version = ? where module = ?";
 			String version = (String) localVersionMap.get(key);
+			String sql = "update ship_version set version = ? , update_time = ? where module = ? and version != ?";
+			
 			try {
-				PreparedStatement ps = (PreparedStatement) conn.prepareCall(sql);
+				PreparedStatement ps = (PreparedStatement) conn.prepareStatement(sql);
+				SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date date = new Date();
+				
 				ps.setString(1, version);
-				ps.setString(2, keyInfo);
+				ps.setString(2, simpleFormat.format(date)); 
+				ps.setString(3, keyInfo);
+				ps.setString(4, version);
 				ps.executeUpdate();
 				ps.close();
 			} catch (SQLException e) {
@@ -100,16 +108,16 @@ public class UpdateShipLogs extends HttpServlet {
 		}
 		
 		//通知岸端 增量包已经更新到本地
-//		try {
-//			Map<String,Object> params = dao.getShipVersion(dataList);
-//			String ip = InetAddress.getLocalHost().getHostAddress(); 
-//			params.put("ip",ip);
-//			String url = bundleUtil.getInfo("config/ship", "updateUrl"); 
-//			PostMethod.httpClientPost(url, params, "utf-8");
-//		} catch (UnknownHostException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} 
+		try {
+			Map<String,Object> params = dao.getShipVersion(dataList);
+			String ip = InetAddress.getLocalHost().getHostAddress(); 
+			params.put("ip",ip);
+			String url = bundleUtil.getInfo("config/ship", "updateUrl"); 
+			PostMethod.httpClientPost(url, params, "utf-8");
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		connectUtil.closeConn(conn);		
 	}
 

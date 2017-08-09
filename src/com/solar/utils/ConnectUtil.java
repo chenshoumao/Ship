@@ -35,6 +35,16 @@ public class ConnectUtil {
 		return null;
 	}
 
+	public static void main(String[] args) {
+		ConnectUtil connectUtil = new ConnectUtil();
+		try {
+			Connection conn = connectUtil.getConn();
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e);
+		}
+		
+	}
 	public void closeConn(Connection conn) {
 		try {
 			conn.close();
