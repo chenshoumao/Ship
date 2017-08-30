@@ -8,13 +8,14 @@ import java.util.Date;
 public class Version implements Comparable{
 	private String main_Version;
 	private String type_Version;
-	private final String base_Version = "release";
+	private final String base_Version =  "release";
 	private Date date_Version ;
 	public String getMain_Version() {
 		return main_Version;
 	}
 	
 	public Version(String str){
+		
 		int firstIndex = str.indexOf("_");
 		int secondIndex = str.indexOf("_", firstIndex+1);
 		int thirdIndex = str.indexOf("_", secondIndex+1);
