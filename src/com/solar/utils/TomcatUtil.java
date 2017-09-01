@@ -6,7 +6,7 @@ public class TomcatUtil {
 	public static void main(String[] args) {
 		Runtime r = Runtime.getRuntime();
 		try {
-			Process p = r.exec("net start tomcat7");
+			Process p = r.exec("net start tomcat7_2");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -15,7 +15,7 @@ public class TomcatUtil {
 	public void startTomcat(){
 		Runtime r = Runtime.getRuntime();
 		try {
-			Process p = r.exec("net start tomcat7");
+			Process p = r.exec("net start tomcat7_2");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -25,7 +25,7 @@ public class TomcatUtil {
 	public void stopTomcat(){
 		Runtime r = Runtime.getRuntime();
 		try {
-			Process p = r.exec("net stop tomcat7");
+			Process p = r.exec("net stop tomcat7_2");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

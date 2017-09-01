@@ -26,7 +26,7 @@
 			})
 			alert("已经向岸端程序发出更新请求，请等待。。。");
 			$.ajax({
-				url:"http://localhost:8080/Ship/ShipServlet",
+				url:"http://localhost:8081/Ship/ShipServlet",
 				type:'post', 
 				dataType:'json',
 				data:{'data':temp},				

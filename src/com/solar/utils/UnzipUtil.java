@@ -101,8 +101,8 @@ public class UnzipUtil {
 				System.out.println(checkIn.getChecksum().getValue());
 				checkIn.close();
 
-				Thread.sleep(4000);
-				File file = new File(sourcePath); 
+				//Thread.sleep(4000);
+			//	File file = new File(sourcePath); 
 			}
 
 		} catch (Exception e) {

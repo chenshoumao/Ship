@@ -114,6 +114,8 @@ public class UnZipMonitor extends HttpServlet implements Runnable {
 										sqlExcute.updateDB(sqlFile); 
 									}
 								}  
+							//	logger.debug("船端第四步 向岸端发送更新完毕信息");
+							//	UpdateShipLogs.UpdateLogs();
 								logger.debug("船端第四步");
 								logger.debug("	重启tomcat7");
 								

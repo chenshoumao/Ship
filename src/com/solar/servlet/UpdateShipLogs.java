@@ -1,9 +1,15 @@
 package com.solar.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -57,7 +63,7 @@ public class UpdateShipLogs extends HttpServlet {
 		Map<String,Object> localVersionMap = dao.getShipVersion(dataList);
 		ConnectUtil connectUtil = new ConnectUtil();
 		Connection conn = connectUtil.getConn();
-		//向更新 更新记录表
+		//向岸端 更新记录表
 		try {
 			int count = 0;
 			for (String key : dataList) {
@@ -88,18 +94,36 @@ public class UpdateShipLogs extends HttpServlet {
 		for(String key : dataList){
 			String keyInfo = bundleUtil.getInfo("config/module", key);
 			String version = (String) localVersionMap.get(key);
-			String sql = "update ship_version set version = ? , update_time = ? where module = ? and version != ?";
+			
 			
 			try {
-				PreparedStatement ps = (PreparedStatement) conn.prepareStatement(sql);
-				SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date date = new Date();
-				
-				ps.setString(1, version);
-				ps.setString(2, simpleFormat.format(date)); 
-				ps.setString(3, keyInfo);
-				ps.setString(4, version);
-				ps.executeUpdate();
+				PreparedStatement ps = null;
+				ResultSet rs = null;
+				String sql = "select * from ship_version where module = ?";
+				ps = (PreparedStatement) conn.prepareStatement(sql);
+				ps.setString(1, keyInfo);
+				rs = ps.executeQuery();
+				if(rs.next()){
+					sql = "update ship_version set version = ? , update_time = ? where module = ? and version != ?"; 
+					SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date date = new Date(); 
+					ps = (PreparedStatement) conn.prepareStatement(sql);
+					ps.setString(1, version);
+					ps.setString(2, simpleFormat.format(date)); 
+					ps.setString(3, keyInfo);
+					ps.setString(4, version);
+					ps.executeUpdate();
+				}
+				else{
+					sql = "insert into ship_version(module,version,update_time) values(?,?,?)";
+					SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date date = new Date(); 
+					ps = (PreparedStatement) conn.prepareStatement(sql);
+					ps.setString(1, keyInfo);
+					ps.setString(2, version);
+					ps.setString(3, simpleFormat.format(date)); 
+					ps.execute();
+				}
 				ps.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -108,12 +132,27 @@ public class UpdateShipLogs extends HttpServlet {
 		}
 		
 		//通知岸端 增量包已经更新到本地
+		//
 		try {
 			Map<String,Object> params = dao.getShipVersion(dataList);
 			String ip = InetAddress.getLocalHost().getHostAddress(); 
 			params.put("ip",ip);
 			String url = bundleUtil.getInfo("config/ship", "updateUrl"); 
-			PostMethod.httpClientPost(url, params, "utf-8");
+			//先判断url是否可以连接
+			URL contentUrl = null;
+			try {
+				contentUrl = new URL(url);
+				URLConnection urlConn = contentUrl.openConnection();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(
+						urlConn.getInputStream())); // 实例化输入流，并获取网页代码
+				String s;
+				if((s = reader.readLine()) != null) {
+					PostMethod.httpClientPost(url, params, "utf-8");
+				}
+			} catch (Exception e) {
+				//e.printStackTrace();
+				
+			} 
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
