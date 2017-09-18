@@ -30,11 +30,11 @@
 				type:'post', 
 				dataType:'json',
 				data:{'data':temp},				
-				success:function(list){
-					console.log(list);
-					var state = true;
+				success:function(map){ 
+					var state = map['state']; 
+					if(state){
 					var consoleInfo = "";
-					
+					var list = map['list'];
 					for(var i = 0; i < list.length;i++){
 						$.each(list[i],function(key,values){ 
 							if(values == true){
@@ -56,6 +56,9 @@
 							type:'post', 
 							data:{'info':consoleInfo}
 						})
+					}}
+					else if(!state){
+						alert(map['reason']);
 					}
 					
 				}

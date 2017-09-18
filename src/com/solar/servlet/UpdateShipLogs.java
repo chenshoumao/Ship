@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -18,9 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.derby.client.am.PreparedStatement; 
+import javax.servlet.http.HttpServletResponse; 
 import com.solar.dao.impl.ShipDaoImpl;
 import com.solar.utils.ConnectUtil;
 import com.solar.utils.PostMethod;
@@ -71,7 +70,7 @@ public class UpdateShipLogs extends HttpServlet {
 				String sql = "update ship_update_logs set new_version = ? , update_time = ? , is_over= 1, update_state = '更新完毕' where module =? and original_version != ? and is_over = 0";
 				
 				PreparedStatement ps; 
-				ps = (PreparedStatement) conn.prepareStatement(sql);
+				ps =  conn.prepareStatement(sql);
 				
 				String version = (String) localVersionMap.get(key);
 				 

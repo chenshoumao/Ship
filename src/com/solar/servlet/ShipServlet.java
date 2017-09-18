@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -52,7 +53,9 @@ public class ShipServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		 
+		response.setCharacterEncoding("utf-8");			
+		response.setHeader("content-type", "text/html;chaset=UTF-8");
+		PrintWriter out = response.getWriter();
 		try {
 			logger.debug("船端第一步：");
 			String data = request.getParameter("data");
@@ -89,13 +92,23 @@ public class ShipServlet extends HttpServlet{
 			params.put("ship",json);
 			params.put("ip",ip);
 			String result = PostMethod.httpClientPost(url, params, "utf-8");
-			response.setCharacterEncoding("utf-8");			
-			response.setHeader("content-type", "text/html;chaset=UTF-8");
-			PrintWriter out = response.getWriter();
-			out.println(result);
+			 
+			Map<String, Object> map = new HashMap<String,Object>();
+			map.put("state", true);
+			map.put("list", mapper.readValue(result, ArrayList.class));
+			json = mapper.writeValueAsString(map);
+			
+			out.println(json);
 		} catch (Exception e) {
 			// TODO: handle exception
 			logger.debug(e);
+			Map<String, Object> map = new HashMap<String,Object>();
+			map.put("state", false);
+			map.put("reason", "无法连接到岸端,请稍后再试");
+			ObjectMapper mapper = new ObjectMapper();
+			String json = mapper.writeValueAsString(map);
+			out.write(json);
+			
 		}
 
 	}

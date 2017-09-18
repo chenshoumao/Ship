@@ -3,6 +3,7 @@ package com.solar.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.derby.client.am.PreparedStatement;
+ 
 
 import com.solar.utils.ConnectUtil;
 
@@ -47,7 +48,7 @@ public class ShipSizeServlet extends HttpServlet {
 		String size = "";
 		List list = new ArrayList();
 		try {
-			ps = (PreparedStatement) conn.prepareStatement(sql); 
+			ps =  conn.prepareStatement(sql); 
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				name = rs.getString(1);

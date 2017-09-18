@@ -25,7 +25,7 @@ public class TomcatUtil {
 	public void stopTomcat(){
 		Runtime r = Runtime.getRuntime();
 		try {
-			Process p = r.exec("net stop tomcat7_2");
+			Process p = r.exec("net stop shipside_tomcat7");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

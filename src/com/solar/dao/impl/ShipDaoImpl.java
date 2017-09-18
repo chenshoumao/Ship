@@ -3,6 +3,7 @@ package com.solar.dao.impl;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import org.apache.commons.io.FileUtils;
-import org.apache.derby.client.am.PreparedStatement;
+
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -146,7 +147,7 @@ public class ShipDaoImpl implements ShipDao {
 			ConnectUtil connectUtil = new ConnectUtil();
 			Connection conn = connectUtil.getConn();
 			try {
-				PreparedStatement ps = (PreparedStatement) conn.prepareStatement(sql);
+				PreparedStatement ps = conn.prepareStatement(sql);
 				ps.setString(1, keyInfo);
 				ResultSet rs = ps.executeQuery();
 				if(rs.next())
@@ -239,7 +240,7 @@ public class ShipDaoImpl implements ShipDao {
 		//详细结果
 		String info = "";
 		try {
-			ps = (PreparedStatement) conn.prepareStatement(sql);
+			ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			outer:
 			while(rs.next()){
