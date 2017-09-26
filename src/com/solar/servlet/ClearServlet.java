@@ -44,6 +44,9 @@ public class ClearServlet extends HttpServlet {
 		//压缩文件的通知文件
 		String informZipFilePath = bundleUtil.getInfo("config/ship", "informZipFilePath");
 		deleteFile(new File(informZipFilePath),false);
+		
+		//启动定时更新功能
+		new UpdateTimeTask().executeTimeTask();
 	}
 
 

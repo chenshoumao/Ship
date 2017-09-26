@@ -128,21 +128,7 @@ public class UnZipMonitor extends HttpServlet implements Runnable {
 						}	
 						//解压
 						else{
-							logger.debug("船端第二步");
-							logger.debug("	解压文件");
-							String zipPath = traverseFolder2(filePath);
-							boolean state = unzip(zipPath);
-							logger.debug("	解压状态：" + state);
-							if(state){
-								logger.debug("	将解压后的信息书写到指定文件");
-								WriteFileUtil writeFileUtil = new WriteFileUtil();
-						    	ResourceBundleUtil resourceBundle = new ResourceBundleUtil(); 
-						    	String informUnzipFilePath = resourceBundle.getInfo("config/ship","informUnzipFilePath"); 
-						    	String unzipPath = resourceBundle.getInfo("config/ship","unzipPath");
-						    	logger.debug("	通知文件是： " + informUnzipFilePath);
-						    	logger.debug("	通知内容为 ： " + unzipPath);
-						    	writeFileUtil.writeInfoToFile(unzipPath, informUnzipFilePath);
-							}
+							unzip(filePath);
 						}
 					}
 					 System.out.println(event.kind() +"," + ((
@@ -201,20 +187,37 @@ public class UnZipMonitor extends HttpServlet implements Runnable {
 		}
 	}
 	public static boolean unzip(String sourcePath) throws UnsupportedEncodingException {
+		
+		
+		logger.debug("船端第二步");
+		logger.debug("	解压文件");
+		 
+		
+		 
+		
 		ResourceBundleUtil bundleUtil = new ResourceBundleUtil(); 
-		String zipPath = bundleUtil.getInfo("config/ship","informZipFilePath"); 
-		logger.debug("即将要解压的压缩文件路径 ： " + zipPath);
+		//String zipPath = bundleUtil.getInfo("config/ship","informZipFilePath"); 
+		logger.debug("即将要解压的压缩文件路径 ： " + sourcePath);
 		ReadFile readFile = new ReadFile();
 		UnzipUtil unzipUtil = new UnzipUtil();
-		try {
-			sourcePath = readFile.readLastLine(new File(sourcePath), "utf-8");
+	 
+			//sourcePath = readFile.readLastLine(new File(sourcePath), "utf-8");
 			String des = bundleUtil.getInfo("config/ship","unzipPath");
-			logger.debug("解压到的  ： " + zipPath); 
+		//	logger.debug("解压到的  ： " + zipPath); 
 			unzipUtil.unzip(sourcePath, des);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			
+			logger.debug("	解压状态：" + "成功");
+			
+			logger.debug("	将解压后的信息书写到指定文件");
+			WriteFileUtil writeFileUtil = new WriteFileUtil();
+	    	ResourceBundleUtil resourceBundle = new ResourceBundleUtil(); 
+	    	String informUnzipFilePath = resourceBundle.getInfo("config/ship","informUnzipFilePath"); 
+	    	String unzipPath = resourceBundle.getInfo("config/ship","unzipPath");
+	    	logger.debug("	通知文件是： " + informUnzipFilePath);
+	    	logger.debug("	通知内容为 ： " + unzipPath);
+	    	writeFileUtil.writeInfoToFile(unzipPath, informUnzipFilePath);
+			
+		 
 		return true;
 	}
 

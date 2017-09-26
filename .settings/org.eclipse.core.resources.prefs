@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
-encoding//src/com/solar/servlet/ShipServlet.java=UTF-8
+encoding//src/com/solar/servlet/ShipUpdate.java=UTF-8
 encoding//src/config=UTF-8
+encoding//src/config/db.properties=UTF-8
 encoding//src/config/module.properties=UTF-8
 encoding//src/config/ship.properties=UTF-8
 encoding//src/log4j.properties=UTF-8

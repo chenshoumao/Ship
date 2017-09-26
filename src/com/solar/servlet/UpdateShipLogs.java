@@ -65,7 +65,7 @@ public class UpdateShipLogs extends HttpServlet {
 		//向岸端 更新记录表
 		try {
 			int count = 0;
-			for (String key : dataList) {
+			for (String key : dataList) {System.out.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
 				String keyInfo = bundleUtil.getInfo("config/module", key);
 				String sql = "update ship_update_logs set new_version = ? , update_time = ? , is_over= 1, update_state = '更新完毕' where module =? and original_version != ? and is_over = 0";
 				
@@ -166,7 +166,7 @@ public class UpdateShipLogs extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		String info = request.getParameter("info"); 
-			 
+			 System.out.println("cccccccccccccccccccccccccccccccccccccccccccccc");
 			try { 
 				int count = 0; 
 					String sql = "update ship_update_logs set  update_time = ? , update_state = ? , is_over =1 where is_over = 0";

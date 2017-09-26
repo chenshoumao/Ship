@@ -1,14 +1,11 @@
 package com.solar.servlet;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+ 
+import java.net.InetAddress; 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
+import java.util.List;
+import java.util.Map; 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,53 +13,28 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solar.dao.ShipDao;
 import com.solar.dao.impl.ShipDaoImpl;
+import com.solar.utils.FTPUtil;
 import com.solar.utils.MyException;
 import com.solar.utils.PostMethod;
 import com.solar.utils.ResourceBundleUtil;
 /**
  * Servlet implementation class ShipServlet
  */
-@WebServlet("/ShipServlet")
-public class ShipServlet extends HttpServlet{
-	private static Logger logger = Logger.getLogger(ShipServlet.class);
-	private static final long serialVersionUID = 1L;
-	private ShipDaoImpl dao;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public ShipServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	
-	public static void main(String[] args) {
-		try {
-			String ip =  InetAddress.getLocalHost().getHostAddress();
-			System.out.println(ip);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
+ 
+public class ShipUpdate{
+	private static Logger logger = Logger.getLogger(ShipUpdate.class);
+ 
+	private ShipDaoImpl dao; 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void startUpdate(){
 		// TODO Auto-generated method stub
-		response.setCharacterEncoding("utf-8");			
-		response.setHeader("content-type", "text/html;chaset=UTF-8");
-		PrintWriter out = response.getWriter();
+	 
 		try {
 			logger.debug("船端第一步：");
-			String data = request.getParameter("data");
-			if(data.equals("") || data.equals(null)){
-				throw new MyException("	船端请求更新的关键数据为空！");
-			}
-			data += "db";
+			String data = "app,haitu,db"; 
 			logger.debug("	获取了 请求更新，请求的数据是 : " + data);
 			// 第一步 罗列出所有的组件版本
 			String shipKey = "app,haitu,ditu,db";
@@ -76,7 +48,7 @@ public class ShipServlet extends HttpServlet{
 
 			logger.debug("	解析成完整的json格式数据: " + json);
 
-			// 讲请求的详细请求信息存进数据库
+			// 将请求的详细请求信息存进数据库
 			dao = new ShipDaoImpl();
 			dao.writeUpdateLogs(data, json);
 			
@@ -92,35 +64,31 @@ public class ShipServlet extends HttpServlet{
 			params.put("ship",json);
 			params.put("ip",ip);
 			String result = PostMethod.httpClientPost(url, params, "utf-8");
+			
+			List<Map<String, Object>> list = mapper.readValue(result, ArrayList.class);
+			
+			if(list.size() > 0){
+				Map<String, Object> map = list.get(0);
+				String zipName = (String) map.get("zipName");
+				FTPUtil ftpUtil = new FTPUtil();
+				ftpUtil.downloadFile(zipName);
+			}
 			 
 			Map<String, Object> map = new HashMap<String,Object>();
 			map.put("state", true);
 			map.put("list", mapper.readValue(result, ArrayList.class));
-			json = mapper.writeValueAsString(map);
+			 
 			
-			out.println(json);
+			 
 		} catch (Exception e) {
 			// TODO: handle exception
-			logger.debug(e);
-			Map<String, Object> map = new HashMap<String,Object>();
-			map.put("state", false);
-			map.put("reason", "无法连接到岸端,请稍后再试");
-			ObjectMapper mapper = new ObjectMapper();
-			String json = mapper.writeValueAsString(map);
-			out.write(json);
-			
+			logger.debug(e); 
+			logger.debug("无法连接到岸端,请稍后再试"); 
 		}
 
 	}
 
-	public void sayHello(String name) {
-		System.out.println(name);
-	}
-
-	public void sayHello(String name, String sex) {
-		System.out.println(name + "," + sex);
-	}
-
+	 
 	/**
 	 * @author 陈守貌
 	 * @Time 2017-07-14
@@ -135,16 +103,6 @@ public class ShipServlet extends HttpServlet{
 		ShipDao dao = new ShipDaoImpl();
 		map = dao.getShipVersion(updatePart);
 		return map;
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
 	}
 
 	 
