@@ -14,10 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import org.apache.commons.io.FileUtils;
 
-import org.apache.log4j.Logger;
-
+import org.apache.commons.io.FileUtils; 
+import org.apache.log4j.Logger; 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solar.dao.ShipDao;
 
@@ -27,7 +26,7 @@ import com.solar.utils.ResourceBundleUtil;
 
 public class ShipDaoImpl implements ShipDao {
 	private static Logger logger = Logger.getLogger(ShipDaoImpl.class);
-	private ResourceBundle resource = ResourceBundle.getBundle("config/ship");
+ 
 	private final String VERSION = "version.txt";
 
 	/**
@@ -56,7 +55,9 @@ public class ShipDaoImpl implements ShipDao {
 		try {
 			ResourceBundleUtil resouceBundleUtil = new ResourceBundleUtil(); 
 			for (String str : key) {
-				String versionPath = resouceBundleUtil.getInfo("config/ship", str) + File.separator + VERSION;
+				String path = System.getProperty("catalina.home");
+				//String versionPath = resouceBundleUtil.getInfo("config/ship", str) + File.separator + VERSION;
+				String versionPath = path + File.separator + resouceBundleUtil.getInfo("config/ship", str)  + File.separator + VERSION;
 				File file = new File(versionPath);
 				if(file.exists()){
 					List<String> content = FileUtils.readLines(file);
@@ -223,8 +224,9 @@ public class ShipDaoImpl implements ShipDao {
 		// TODO Auto-generated method stub
 		Map<String, Object> returnResult = new HashMap<String, Object>();
 		ConnectUtil connectUtil = new ConnectUtil();
-		ResourceBundleUtil bundleUtil = new ResourceBundleUtil();
-		String tempPath = bundleUtil.getInfo("config/ship", "unzipPath");
+		ResourceBundle bundleUtil =  ResourceBundle.getBundle("config/ship");
+		String path = System.getProperty("catalina.home");
+		String tempPath = path + File.separator + bundleUtil.getString("unzipPath");
 		Connection conn = connectUtil.getConn();
 		String sql = "select module,original_version from ship_update_logs where is_over= 0";
 		PreparedStatement ps;

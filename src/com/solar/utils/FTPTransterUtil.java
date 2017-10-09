@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
 import com.solar.servlet.UnZipMonitor;
  
 
-public class FTPUtil {
-	private static Logger logger = Logger.getLogger(FTPUtil.class);
+public class FTPTransterUtil {
+	private static Logger logger = Logger.getLogger(FTPTransterUtil.class);
 	private String userName;         //FTP 登录用户名   
     private String password;         //FTP 登录密码   
     private String ip;                     //FTP 服务器地址IP地址   
@@ -47,13 +47,14 @@ public class FTPUtil {
              password = bundle.getString("ftp_password");   
              ip = bundle.getString("ftp_ip");   
              port = Integer.parseInt(bundle.getString("ftp_port"));   
-             localDir = bundle.getString("ftp_downloadDir");   
+             String path = System.getProperty("catalina.home");
+             localDir =  path + File.separator +  bundle.getString("ftp_downloadDir");   
         return flag;  
     }   
     
     
     public static void downloadFile(String filename){
-    	FTPUtil ftpClient = new FTPUtil();  
+    	FTPTransterUtil ftpClient = new FTPTransterUtil();  
         if(ftpClient.connectServer()){   
         	logger.debug("FTP 服务器连接成功，准备下载 文件 ：" +  filename + "到 " + localDir);
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);// 设置传输二进制文件    
@@ -76,10 +77,10 @@ public class FTPUtil {
     }
     
     public static void main(String[] args) {
-    	FTPUtil ftpClient = new FTPUtil();  
+    	FTPTransterUtil ftpClient = new FTPTransterUtil();  
          if(ftpClient.connectServer()){   
              ftpClient.setFileType(FTP.BINARY_FILE_TYPE);// 设置传输二进制文件    
-             ftpClient.loadFile("11.txt", localDir + "11.txt");
+             ftpClient.loadFile("192.168.3.44_20170927105353.zip", localDir + "192.168.3.44_20170927105353.zip");
           //   ftpClient.uploadManyFile("H:\\d", "/d/");   
              ftpClient.closeConnect();// 关闭连接   
          }   

@@ -27,10 +27,7 @@ public class UpdateTimeTask extends TimerTask {
 
 	public  void executeTimeTask() {
 		
-		System.out.println("运行定时！");
-		
-		// 加载配置文件
-		ResourceBundle ship = ResourceBundle.getBundle("config/ship");
+		System.out.println("运行定时！");  
 		// 获取时间间隔
 		String periodTime = "30000";
 		// 获取延迟时间

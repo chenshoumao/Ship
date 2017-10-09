@@ -45,9 +45,10 @@ public class UnZipMonitor extends HttpServlet implements Runnable {
 
 		// 输出文件路径
 	//	String outPath1 = "D:/海图项目/zip5";
-		ResourceBundleUtil bundleUtil = new ResourceBundleUtil();
-		String filePath = bundleUtil.getInfo("config/ship", "informZipPath");
-		String filePath2 = bundleUtil.getInfo("config/ship", "informUnzipPath");
+		ResourceBundle bundleUtil = ResourceBundle.getBundle("config/ship");
+		String path = System.getProperty("catalina.home");
+		String filePath = path + File.separator + bundleUtil.getString("informZipPath");
+		String filePath2 =path + File.separator + bundleUtil.getString("informUnzipPath");
 		try {
 
 			// 获取文件系统的WatchService对象
@@ -83,11 +84,11 @@ public class UnZipMonitor extends HttpServlet implements Runnable {
 					if ((event.kind().toString()).equals("ENTRY_CREATE") || (event.kind().toString()).equals("ENTRY_MODIFY")) {
 						System.out.println(event.context() + " --> " + event.kind()); 
 						
-						Path path = (Path)key.watchable();
+						Path filepath = (Path)key.watchable();
 						System.out.println(path.toString() +"," + filePath2); 
 						Thread.sleep(3000);
 						filePath2 = filePath2.replaceAll("/", "\\\\");
-						if((path.toString()).equals(filePath2)){
+						if((filepath.toString()).equals(filePath2)){
 							logger.debug("船端第三步");
 							logger.debug("	接下来即将复制文件到应用中，应该先判断增量文件的产生版本，看看起始的旧版本是否跟自身对应");
 							//接下来即将复制文件到应用中，应该先判断增量文件的产生版本，看看起始的旧版本是否跟自身对应
@@ -99,9 +100,15 @@ public class UnZipMonitor extends HttpServlet implements Runnable {
 								//更新
 								CopyFileUtil copyFileUtil = new CopyFileUtil();
 								ResourceBundleUtil resourceBundle = new ResourceBundleUtil(); 
-								String webUrl = resourceBundle.getInfo("config/ship","app");  
-								String unzipPath = resourceBundle.getInfo("config/ship","unzipPath");
+								
+								String webUrl = path + File.separator + bundleUtil.getString("app");  
+								String unzipPath = path + File.separator +bundleUtil.getString("unzipPath");
 								copyFileUtil.copyDirectory(unzipPath, webUrl, true); 
+								
+								//把海图的文件copy到指定目录
+								String mapUrl = path + File.separator +bundleUtil.getString("haitu");  
+								copyFileUtil.copyDirectory(webUrl + "/haitu", mapUrl, true); 
+							
 							
 								//判断增量文件中是否有sql文件
 								File fileScan = new File(unzipPath+File.separator + "db");
@@ -195,14 +202,15 @@ public class UnZipMonitor extends HttpServlet implements Runnable {
 		
 		 
 		
-		ResourceBundleUtil bundleUtil = new ResourceBundleUtil(); 
+		 
 		//String zipPath = bundleUtil.getInfo("config/ship","informZipFilePath"); 
 		logger.debug("即将要解压的压缩文件路径 ： " + sourcePath);
 		ReadFile readFile = new ReadFile();
 		UnzipUtil unzipUtil = new UnzipUtil();
-	 
+		ResourceBundle bundleUtil = ResourceBundle.getBundle("config/ship");
+		String path = System.getProperty("catalina.home");
 			//sourcePath = readFile.readLastLine(new File(sourcePath), "utf-8");
-			String des = bundleUtil.getInfo("config/ship","unzipPath");
+			String des = path + File.separator + bundleUtil.getString("unzipPath");
 		//	logger.debug("解压到的  ： " + zipPath); 
 			unzipUtil.unzip(sourcePath, des);
 			
@@ -210,9 +218,9 @@ public class UnZipMonitor extends HttpServlet implements Runnable {
 			
 			logger.debug("	将解压后的信息书写到指定文件");
 			WriteFileUtil writeFileUtil = new WriteFileUtil();
-	    	ResourceBundleUtil resourceBundle = new ResourceBundleUtil(); 
-	    	String informUnzipFilePath = resourceBundle.getInfo("config/ship","informUnzipFilePath"); 
-	    	String unzipPath = resourceBundle.getInfo("config/ship","unzipPath");
+	    	 
+	    	String informUnzipFilePath =  path + File.separator +bundleUtil.getString("informUnzipFilePath"); 
+	    	String unzipPath =  path + File.separator +bundleUtil.getString("unzipPath");
 	    	logger.debug("	通知文件是： " + informUnzipFilePath);
 	    	logger.debug("	通知内容为 ： " + unzipPath);
 	    	writeFileUtil.writeInfoToFile(unzipPath, informUnzipFilePath);

@@ -2,6 +2,8 @@ package com.solar.servlet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ResourceBundle;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,19 +32,20 @@ public class ClearServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		// TODO Auto-generated method stub
-		ResourceBundleUtil bundleUtil = new ResourceBundleUtil();
+		ResourceBundle bundleUtil = ResourceBundle.getBundle("config/ship");
 		//压缩文件路径
-		String addPath = bundleUtil.getInfo("config/ship", "zipPath");
+		String path = System.getProperty("catalina.home");
+		String addPath = path + File.separator + bundleUtil.getString("zipPath");
 		File addFile = new File(addPath);
 		deleteFile(addFile,false);
 		
 		
 		//解压后的文件所在地址
-		String unzipPath = bundleUtil.getInfo("config/ship", "unzipPath");
+		String unzipPath = path + File.separator +  bundleUtil.getString("unzipPath");
 		deleteFile(new File(unzipPath),false);
 		
 		//压缩文件的通知文件
-		String informZipFilePath = bundleUtil.getInfo("config/ship", "informZipFilePath");
+		String informZipFilePath =path + File.separator +   bundleUtil.getString("informZipFilePath");
 		deleteFile(new File(informZipFilePath),false);
 		
 		//启动定时更新功能

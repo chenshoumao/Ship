@@ -1,6 +1,13 @@
 ----------------------------------------------------------------
-2017-09-06 09:36:20.915 GMT:
- Booting Derby version The Apache Software Foundation - Apache Derby - 10.5.3.0 - (802917): instance a816c00e-015e-568c-2bae-0000068ef790
-on database directory D:\derby\shipside  
-
+Fri Sep 29 18:23:31 CST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-015e-cd29-a410-000048e9ff28 
+on database directory C:\Users\JJ\shipside with class loader sun.misc.Launcher$AppClassLoader@788bf135 
+Loaded from file:/C:/Users/JJ/workspace/Ship-master/WebContent/WEB-INF/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_80-b15
+user.dir=C:\Users\JJ\workspace\Ship-master
+os.name=Windows 7
+os.arch=amd64
+os.version=6.1
+derby.system.home=null
 Database Class Loader started - derby.database.classpath=''

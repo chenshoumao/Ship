@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solar.dao.ShipDao;
 import com.solar.dao.impl.ShipDaoImpl;
-import com.solar.utils.FTPUtil;
+import com.solar.utils.FTPTransterUtil;
 import com.solar.utils.MyException;
 import com.solar.utils.PostMethod;
 import com.solar.utils.ResourceBundleUtil;
@@ -25,6 +25,12 @@ public class ShipUpdate{
 	private static Logger logger = Logger.getLogger(ShipUpdate.class);
  
 	private ShipDaoImpl dao; 
+	
+	public static void main(String[] args) {
+		ShipUpdate update = new ShipUpdate();
+		update.startUpdate();
+	}
+	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -59,18 +65,21 @@ public class ShipUpdate{
 			
 			//讲打包好的信息发送到岸段的服务器中进行处理
 			ResourceBundleUtil bundleUtil = new ResourceBundleUtil();
+			String path = System.getProperty("catalina.home");
 			String url = bundleUtil.getInfo("config/ship", "landUrl");
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("ship",json);
 			params.put("ip",ip);
 			String result = PostMethod.httpClientPost(url, params, "utf-8");
 			
+			System.out.println(1111);
 			List<Map<String, Object>> list = mapper.readValue(result, ArrayList.class);
 			
 			if(list.size() > 0){
 				Map<String, Object> map = list.get(0);
 				String zipName = (String) map.get("zipName");
-				FTPUtil ftpUtil = new FTPUtil();
+				System.out.println(" 接收到的压缩包名字是 ： " + zipName);
+				FTPTransterUtil ftpUtil = new FTPTransterUtil();
 				ftpUtil.downloadFile(zipName);
 			}
 			 

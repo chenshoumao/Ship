@@ -1,5 +1,6 @@
 package com.solar.utils;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,7 +24,8 @@ public class ConnectUtil {
 			driver = bundleUtil.getInfo("config/db", "driver");
 			username = bundleUtil.getInfo("config/db", "username");
 			password = bundleUtil.getInfo("config/db", "password");
-			dbName = bundleUtil.getInfo("config/db", "dbName");
+			 String path = System.getProperty("catalina.home"); 
+			dbName =  path + File.separator + bundleUtil.getInfo("config/db", "dbName");
 			Class.forName(driver).newInstance();
 			protocol = bundleUtil.getInfo("config/db", "protocol");
 //			Connection conn = DriverManager.getConnection(protocol +  dbName + ";user="+username+";password="+password+";create=true");
