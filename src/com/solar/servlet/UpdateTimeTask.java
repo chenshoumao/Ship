@@ -29,7 +29,7 @@ public class UpdateTimeTask extends TimerTask {
 		
 		System.out.println("运行定时！");  
 		// 获取时间间隔
-		String periodTime = "30000";
+		String periodTime = "180000";
 		// 获取延迟时间
 		String delayTime = "30000";
 		ResourceBundle.clearCache();	// 清理内存中的properties键值对
